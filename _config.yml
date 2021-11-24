@@ -1,0 +1,20 @@
+remote_theme: pmarsceill/just-the-docs
+
+plugins:
+- jekyll-remote-theme
+- jekyll-spaceship
+- jekyll-pdf-embed
+
+repository: 'rnbguy/test-gh-pages'
+
+markdown: kramdown
+
+jekyll-spaceship:
+  mathjax-processor:
+    optimize:
+      enabled: false
+
+logo: "/assets/images/model-based-testing.svg"
+title: Model Based Testing
+description: Part of Informal Systems
+baseurl: ""
