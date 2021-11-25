@@ -9,7 +9,7 @@ grand_parent: Model Based Testing
 
 This cheatsheet contains some additional syntactic sugar, and uses the official TLA+ terminology in the descriptions.
 
-```tla
+```
 a /= b                      \* a not equals b
 a # b                       \* a not equals b
 ~a                          \* not a

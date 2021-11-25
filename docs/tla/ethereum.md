@@ -1,4 +1,5 @@
 ---
+title: Ethereum
 layout: default
 parent: Tla+
 grand_parent: Model Based Testing

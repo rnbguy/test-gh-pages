@@ -1,4 +1,5 @@
 ---
+title: TypeChecking 
 layout: default
 parent: Tla+
 grand_parent: Model Based Testing
