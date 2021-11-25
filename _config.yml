@@ -1,13 +1,37 @@
+title: Model Based Testing
+description: Part of Informal Systems
+baseurl: ""
+url: "https://test.rnbguy.at"
+
 remote_theme: pmarsceill/just-the-docs
 
 plugins:
 - jekyll-remote-theme
 - jekyll-spaceship
 - jekyll-pdf-embed
+- jekyll-seo-tag
 
 repository: 'rnbguy/test-gh-pages'
 
+nav_sort: case_sensitive
+
+back_to_top: true
+back_to_top_text: "Back to top"
+
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/rnbguy/test-gh-pages" 
+gh_edit_branch: "main"
+# gh_edit_source: docs
+gh_edit_view_mode: "tree"
+
 markdown: kramdown
+
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
 
 jekyll-spaceship:
   mathjax-processor:
@@ -15,6 +39,3 @@ jekyll-spaceship:
       enabled: false
 
 logo: "/assets/images/model-based-testing.svg"
-title: Model Based Testing
-description: Part of Informal Systems
-baseurl: ""
