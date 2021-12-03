@@ -14,4 +14,18 @@ To learn more about tla+.
 - [Model extraction](docs/model)
 - [Modelator](docs/modelator)
 
+```rs
+fn main() {
+    println!("hello world!");
+}
+```
+
+{% highlight LANG %}
+fn main() {
+    println!("hello world!");
+}
+{% endhighlight %}
+
+Hello `world` to everyone!
+
 {:no-toc}
