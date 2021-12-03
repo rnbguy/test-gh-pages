@@ -1,0 +1,260 @@
+{"0": {
+    "doc": "Advanced cheat sheet",
+    "title": "TLA+ Advanced Cheatsheet",
+    "content": "This cheatsheet contains some additional syntactic sugar, and uses the official TLA+ terminology in the descriptions. a /= b \\* a not equals b a # b \\* a not equals b ~a \\* not a /\\ \\* and \\/ \\* or S \\cup T \\* S union T S \\cap T \\* S intersect T S \\union T \\* S union T S \\intersect T \\* S intersect T S \\ T \\* S less T \\A x \\in S: \\* for all elements x in the set S .. \\E x \\in S: \\* there exists x in the set S such that .. {a,b,c} \\* the set containing a,b,c {x \\in S: P(x)} \\* the set of elements in S such that P(x) \\SUBSET S \\* the powerset of S (set of all subsets) \\UNION S \\* the union of all sets in S (S is a set of sets) f[e] \\* the value of f at e DOMAIN f \\* the domain of the function f [x \\in S |-&gt; g(x)] \\* the function mapping elements x in S to the value of g(x) [S -&gt; T] \\* the set of functions mapping values in the set S to values in the set T [f EXCEPT ![x] = y] \\* the function f, except for x is remapped to y [f EXCEPT ![x] = g(@)] \\* the function f, except for x is remapped to the value of g(f[x]) f.x \\* the value of x in the record f [k1 |-&gt; v1, k2 |-&gt; v2, ...] \\* the record where keys are the strings k1, k2.. mapped to \\* their respective values [k1 : V1, k2 : V2, ...] \\* the set of records mapping strings k1, k2.. to elements \\* in their respective sets [f EXCEPT !.x = y] \\* the record f, except for x is remapped to y (but x must be a string) [f EXCEPT !.x = g(@)] \\* the record f, except for x is remapped to g(f.x) (but x must be a string) t[i] \\* the ith element of the sequence t (1-indexed!) a \\o b \\* the sequences a and b concatenated &lt;&lt;a,b,c&gt;&gt; \\* explicit sequence S \\X T \\X .. \\X SN \\* the set of length N sequences with ith elements in Si IF P THEN x ELSE y \\* if/else CASE \\* case switch pred1 -&gt; g1() [] pred2 -&gt; g2() [] pred3 -&gt; g3() ... [] OTHER -&gt; gN() f @@ g \\* the merger of functions f and g, with f taking higher priority a :&gt; b \\* the function with only the value a mapping to value b x \\in Int \\* an integer x Len(v) \\* the length of the sequence v Append(v, e) \\* the sequence v with e added to the end Head(v) \\* the first element of the sequence v SubSeq(v, i, j) \\* the subsequence of v from indexes i..j inclusive . ",
+    "url": "https://test.rnbguy.at/docs/tla/advanced-tla+cheatsheet.html#tla-advanced-cheatsheet",
+    "relUrl": "/docs/tla/advanced-tla+cheatsheet.html#tla-advanced-cheatsheet"
+  },"1": {
+    "doc": "Advanced cheat sheet",
+    "title": "Advanced cheat sheet",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/advanced-tla+cheatsheet.html",
+    "relUrl": "/docs/tla/advanced-tla+cheatsheet.html"
+  },"2": {
+    "doc": "Apalache vs TLC",
+    "title": "Apalache vs TLC",
+    "content": "In ‘Hello World’ we used TLC to model check a simple model. Both model checkers have advantages and disadvantages. ",
+    "url": "https://test.rnbguy.at/docs/tla/apalache_vs_tlc.html",
+    "relUrl": "/docs/tla/apalache_vs_tlc.html"
+  },"3": {
+    "doc": "Apalache vs TLC",
+    "title": "Apalache",
+    "content": "Apalache is a bounded symbolic model checker. Apalache will transform your Init and Next boolean functions into a logical formula which can be solved using an SMT solver. The formula is a conjunction of smaller formulas, one for each step of the system. This means Apalache requires a parameter k specifying how many steps it should explore, starting from Init. The advantage of Apalache’s approach is that it can deal with some infinite state spaces. For example it can solve the constraint problem (x is integer) /\\ (0 &lt;= x) /\\ (x &lt; 2^32) very easily - providing concrete values of x that satisfy the constraints. Can you see how this may be useful for modelling financial transaction software? . The disadvantage of Apalache’s approach is that it can not easily check executions which take many steps from Init. This is because the formula grows for each step in the execution, becoming progressively more difficult to solve with an SMT solver. In practice up to 12 steps may be achievable in a reasonable time. ",
+    "url": "https://test.rnbguy.at/docs/tla/apalache_vs_tlc.html#apalache",
+    "relUrl": "/docs/tla/apalache_vs_tlc.html#apalache"
+  },"4": {
+    "doc": "Apalache vs TLC",
+    "title": "TLC",
+    "content": "TLC is an explicit state enumeration model checker. TLC will perform a breadth first search of the state space starting from the Init state. Each explored state is fingerprinted and the fingerprint is stored. When a state is processed from the queue (BFS style) TLC will only explore its successor states if its fingerprint has not been seen before. The advantage of TLC’s approach is that it can check unbounded length executions. In particular, if there are finitely many possible system states, TLC can enumerate all of them. In practice it is possible to check billions of states, the only limit is storage (to store the BFS queue and the fingerprints) and time. In practice TLC is fast when it can use only RAM but will become extremely slow if it runs out of memory and has to store data on disk. The disadvantage of TLC’s approach is that it must enumerate states explicitly and cannot solve symbolic constraints. For example if x can feasibly take values in [1, 2^32] then TLC will have to check a state for each value. How many states will TLC have to check if (x, y) can both take values in [1, 2^32]? . ",
+    "url": "https://test.rnbguy.at/docs/tla/apalache_vs_tlc.html#tlc",
+    "relUrl": "/docs/tla/apalache_vs_tlc.html#tlc"
+  },"5": {
+    "doc": "Apalache vs TLC",
+    "title": "Feature asymmetry",
+    "content": "There are features that TLC has and Apalache does’t and vice versa. [Coming soon! TODO: link to an Apalache vs TLC page with a detailed discussion] . In this tutorial we focus on Apalache, and particularly three features: . | The type checker Apalache comes with a type checker for TLA+ which helps you to develop models without creating bugs in the model itself | Trace invariants Apalache lets you define boolean functions over the entire sequence of states in an execution. This lets you detect system behavior that single state boolean functions would not be able to detect | Enumerating counterexamples Apalache can generate multiple traces for a given behavior. This enables generating thorough tests for a real system. | . ",
+    "url": "https://test.rnbguy.at/docs/tla/apalache_vs_tlc.html#feature-asymmetry",
+    "relUrl": "/docs/tla/apalache_vs_tlc.html#feature-asymmetry"
+  },"6": {
+    "doc": "Ecosystem",
+    "title": "The TLA+ ecosystem",
+    "content": "There are a number of resources in the ecosystem. The most important are . | The language itself | Apalache - a symbolic bounded model checker | TLC - an explicit state model checker | . The Apalache and TLC model checkers each have pros and cons that make them suited for evaluating different models. There are common names you will see repeatedly as you learn TLA+. We use the following . | VSCode Plugin - highlights and shows syntax errors, runs TLC We recommend using this. | TLA+ standard modules - the standard library These modules are automatically found by Apalache and TLC when you include them. | Google Group - the official discussion forum for TLA+ It’s worth searching here if you’re stuck. | tlaplus repository issues - the issues for the TLA+ components maintained by Microsoft It’s worth searching here if you’re stuck. | . Additional keywords you might see, but that we don’t use in the basic tutorials: . | Modelator - a tool for model-based testing using TLA+ models modelator can generate hundreds of tests from a model and run them against your real system. | SANY - the canonical TLA+ parser used by TLC and Apalache You don’t need to worry about using SANY on its own. | Toolbox - a bespoke IDE for writing TLA+ and running TLC. The toolbox has unique features useful in niche circumstances. We recommend trying the toolbox only after getting used to TLA+, if you need to. | TLA+ community modules - additional modules contributed by the community Using them may require downloading and providing the path for the package. | Pluscal - another language which translates to TLA+ Pluscal is less expressive than TLA+ and uses a different syntax. There are Pascal and C-like flavours. You have to translate it to TLA+ using a transpiler before checking a model written in it. We recommend trying it only after getting used to using regular TLA+. | Specifying Systems - a book on TLA+ written by Leslie Lamport, original creator of TLA+ It contains useful information on niche features of TLC and TLA+. | . ",
+    "url": "https://test.rnbguy.at/docs/tla/ecosystem.html#the-tla-ecosystem",
+    "relUrl": "/docs/tla/ecosystem.html#the-tla-ecosystem"
+  },"7": {
+    "doc": "Ecosystem",
+    "title": "Ecosystem",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/ecosystem.html",
+    "relUrl": "/docs/tla/ecosystem.html"
+  },"8": {
+    "doc": "Ethereum",
+    "title": "Finding an Ethereum exploit using Apalache",
+    "content": "In ‘Hello World’ we used TLC to check a simple model. Now we will walk through a real model. The model models part of the ERC20 Ethereum blockchain technical standard; in particular the model can be used to generate a trace which exploits the API to transfer funds to an attackers address. The model was written by Igor Konnov. ",
+    "url": "https://test.rnbguy.at/docs/tla/ethereum.html#finding-an-ethereum-exploit-using-apalache",
+    "relUrl": "/docs/tla/ethereum.html#finding-an-ethereum-exploit-using-apalache"
+  },"9": {
+    "doc": "Ethereum",
+    "title": "Intro",
+    "content": "This model builds on the skills gained in ‘Hello World’. The model variables use a richer set of data structures including integers, tuples, and key value maps. The operator definitions are also more complicated, making greater use of the LET statement to define helper operators inline. Finally, we will search for a more interesting behavior pattern than we did in ‘Hello World’: an execution that withdraws funds from a target wallet into an attackers wallet. In this way we will see how TLA+ can be used to find vulnerabilities in a real system. ",
+    "url": "https://test.rnbguy.at/docs/tla/ethereum.html#intro",
+    "relUrl": "/docs/tla/ethereum.html#intro"
+  },"10": {
+    "doc": "Ethereum",
+    "title": "The modeled system",
+    "content": "The system being modeled is a system that maintains addresses corresponding to blockchain wallets. It is possible to transfer funds between addresses, by executing transactions on the blockchain. There is a pool which holds transactions which have been submitted for execution, but have not yet been executed; these are the pending transactions. Additionally, it is possible for wallet owners to delegate the ability to transfer their funds to a third party. This functionality is used in automated smart contracts programs. The Ethereum ERC20 standard defines an API for operating such a system. The API . alias apalache=\"java -jar ~/Documents/work/mbt/tla-basics-tutorial/models/apalache-pkg-0.17.4-full.jar\" apalache-mc check --inv=NoTransferAboveApproved MC_ERC20.tla . ",
+    "url": "https://test.rnbguy.at/docs/tla/ethereum.html#the-modeled-system",
+    "relUrl": "/docs/tla/ethereum.html#the-modeled-system"
+  },"11": {
+    "doc": "Ethereum",
+    "title": "Ethereum",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/ethereum.html",
+    "relUrl": "/docs/tla/ethereum.html"
+  },"12": {
+    "doc": "Features",
+    "title": "Features",
+    "content": " ",
+    "url": "https://test.rnbguy.at/features.html#features",
+    "relUrl": "/features.html#features"
+  },"13": {
+    "doc": "Features",
+    "title": "Introduction",
+    "content": "HedgeDoc is a real-time, multi-platform collaborative markdown note editor. This means that you can write notes with other people on your desktop, tablet or even on the phone. You can sign-in via multiple auth providers like Facebook, Twitter, GitHub and many more on the homepage. If you experience any issues, feel free to report it on GitHub. Or meet us on Matrix for dev-talk and interactive help. Thank you very much! . ",
+    "url": "https://test.rnbguy.at/features.html#introduction",
+    "relUrl": "/features.html#introduction"
+  },"14": {
+    "doc": "Features",
+    "title": "Workspace",
+    "content": "Modes . Desktop &amp; Tablet . View: See only the result. Both: See editor and result at the same time. Edit: See only the editor. Mobile . View: See only the result. Edit: See only the editor. Night Mode . When you are tired of a white screen and like a night mode, click on the little moon and turn on the night view of HedgeDoc. The editor view, which is in night mode by default, can also be toggled between night and day view using the the little sun. Image Upload . You can upload an image simply by clicking on the upload button . Alternatively, you can drag-n-drop an image into the editor. Even pasting images is possible! This will automatically upload the image to imgur, Amazon S3, Minio or the local filesystem (depending on the instance’s configuration), nothing to worry about. :tada: . Share Notes . If you want to share an editable note, just copy the URL. If you want to share a read-only note, simply press the publish button and copy the URL. Save a Note . Currently, you can save to Dropbox (depending on the instance’s configuration) or save a Markdown , HTML or raw HTML file locally. Import Notes . Similarly to the save feature, you can also import a Markdown file from Dropbox (depending on the instance’s configuration), or import content from your clipboard , which can parse some HTML. :smiley: . Permissions . It is possible to change the access permission of a note through the little button on the top right of the view. There are four possible options: . |   | Owner read/write | Signed-in read | Signed-in write | Guest read | Guest write | . | &lt;span class=\"text-nowrap\"&gt;&lt;i class=\"fa fa-leaf fa-fw\"&gt;&lt;/i&gt; **Freely**&lt;/span&gt; | ✔ | ✔ | ✔ | ✔ | ✔ | . | &lt;span class=\"text-nowrap\"&gt;&lt;i class=\"fa fa-pencil fa-fw\"&gt;&lt;/i&gt; **Editable**&lt;/span&gt; | ✔ | ✔ | ✔ | ✔ | ✖ | . | &lt;span class=\"text-nowrap\"&gt;&lt;i class=\"fa fa-id-card fa-fw\"&gt;&lt;/i&gt; **Limited**&lt;/span&gt; | ✔ | ✔ | ✔ | ✖ | ✖ | . | &lt;span class=\"text-nowrap\"&gt;&lt;i class=\"fa fa-lock fa-fw\"&gt;&lt;/i&gt; **Locked**&lt;/span&gt; | ✔ | ✔ | ✖ | ✔ | ✖ | . | &lt;span class=\"text-nowrap\"&gt;&lt;i class=\"fa fa-umbrella fa-fw\"&gt;&lt;/i&gt; **Protected**&lt;/span&gt; | ✔ | ✔ | ✖ | ✖ | ✖ | . | &lt;span class=\"text-nowrap\"&gt;&lt;i class=\"fa fa-hand-stop-o fa-fw\"&gt;&lt;/i&gt; **Private**&lt;/span&gt; | ✔ | ✖ | ✖ | ✖ | ✖ | . Only the owner of the note can change the note’s permissions. Slide Mode . You can use a special syntax to organize your note into slides. After that, you can use the Slide Mode to make a presentation. Visit the above link for details. To switch the editor into slide mode, set the document type to slide. ",
+    "url": "https://test.rnbguy.at/features.html#workspace",
+    "relUrl": "/features.html#workspace"
+  },"15": {
+    "doc": "Features",
+    "title": "View",
+    "content": "Autogenerated Table of Contents . You can look at the bottom right section of the view area, there is a ToC button . Pressing that button will show you a current Table of Contents, and will highlight which section you’re at. ToCs support up to three header levels. Permalink . Every header will automatically add a permalink on the right side. You can hover and click to anchor on it. ",
+    "url": "https://test.rnbguy.at/features.html#view",
+    "relUrl": "/features.html#view"
+  },"16": {
+    "doc": "Features",
+    "title": "Edit",
+    "content": "Editor Modes . You can look in the bottom right section of the editor area, there you’ll find a button with SUBLIME on it. When you click it, you can select 3 editor modes, which will also define your shortcut keys: . | Sublime (default) | Emacs | Vim | . Auto-Complete . This editor provides full auto-complete hints in markdown. | Emojis: type : to show hints. | Code blocks: type ` ``` `, followed by another character to show syntax highlighting suggestions. | Headers: type # to show hint. | Referrals: type [] to show hint. | Externals: type {} to show hint. | Images: type ! to show hint. | . Title . The first level 1 heading (e.g. # Title) will be used as the note title. Tags . Tags can be specified with YAML metadata at the start of the note. Those tags will show in your history. --- tags: features, cool, updated --- . YAML Metadata . You can provide advanced note information to set the browser behavior (visit above link for details): . | robots: set web robots meta | lang: set browser language | dir: set text direction | breaks: set to use line breaks | GA: set to use Google Analytics | disqus: set to use Disqus | slideOptions: setup slide mode options | . Table of Contents . Use the syntax [TOC] to embed a table of contents into your note. [TOC] . Emoji . You can type any emoji like this :smile: :smiley: :cry: :wink: . See full emoji list here. ToDo List . | ToDos . | Buy some salad | Brush teeth | Drink some water | Click my box and see the source code, if you’re allowed to edit! | . | . Code Block . We support many programming languages, use the auto complete function to see the entire list. var s = \"JavaScript syntax highlighting\"; alert(s); function $initHighlight(block, cls) { try { if (cls.search(/\\bno\\-highlight\\b/) != -1) return process(block, true, 0x0F) + ' class=\"\"'; } catch (e) { /* handle exception */ } for (var i = 0 / 2; i &lt; classes.length; i++) { if (checkCondition(classes[i]) === undefined) return /\\d+[\\s/]/g; } } . If you want line numbers, type = after specifying the code block languagues. Also, you can specify the start line number. Like below, the line number starts from 101: . var s = \"JavaScript syntax highlighting\"; alert(s); function $initHighlight(block, cls) { try { if (cls.search(/\\bno\\-highlight\\b/) != -1) return process(block, true, 0x0F) + ' class=\"\"'; } catch (e) { /* handle exception */ } for (var i = 0 / 2; i &lt; classes.length; i++) { if (checkCondition(classes[i]) === undefined) return /\\d+[\\s/]/g; } } . Or you might want to continue the previous code block’s line number, use =+: . var s = \"JavaScript syntax highlighting\"; alert(s); . Somtimes you have a super long text without breaks. It’s time to use ! to wrap your code: . When you’re a carpenter making a beautiful chest of drawers, you’re not going to use a piece of plywood on the back. Blockquote Tags . Using the syntax below to specifiy your name, time and color to vary the blockquotes. [name=ChengHan Wu] [time=Sun, Jun 28, 2015 9:59 PM] [color=#907bf7] . Even support nested blockquotes! [name=Max Mustermann] [time=Sun, Jun 28, 2015 9:47 PM] [color=red] . Externals . YouTube . Vimeo . Gist . schacon/4277 . SlideShare . ![](https://www.slideshare.net/briansolis/26-disruptive-technology-trends-2016-2018-56796196_ . PDF . Caution: this might be blocked by your browser if not using an https URL. Note that not all servers allow embedding their content. See our FAQ for details. View PDF MathJax . You can render LaTeX mathematical expressions using MathJax, as on math.stackexchange.com: . The Gamma function satisfying $\\Gamma(n) = (n-1)!\\quad\\forall n\\in\\mathbb N$ is via the Euler integral . \\[x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.\\] \\[\\Gamma(z) = \\int_0^\\infty t^{z-1}e^{-t}dt\\,.\\] More information about LaTeX mathematical expressions here. Diagrams . UML Sequence Diagrams . You can render sequence diagrams like this: . More information about sequence diagrams syntax here. Flow Charts . Flow charts can be specified like this: . st=&gt;start: Start e=&gt;end: End op=&gt;operation: My Operation op2=&gt;operation: lalala cond=&gt;condition: Yes or No? st-&gt;op-&gt;op2-&gt;cond cond(yes)-&gt;e cond(no)-&gt;op2 . More information about flow charts syntax here. Graphviz . digraph hierarchy { nodesep=1.0 // Increases the separation between nodes node [color=Red,fontname=Courier,shape=box] // All nodes will this shape and colour edge [color=Blue, style=dashed] // All the lines look like this Headteacher-&gt;{Deputy1 Deputy2 BusinessManager} Deputy1-&gt;{Teacher1 Teacher2} BusinessManager-&gt;ITManager {rank=same;ITManager Teacher1 Teacher2} // Put them on the same level } . More information about graphviz syntax here . Mermaid . More information about mermaid syntax here . Abc Music Notation . X:1 T:Speed the Plough M:4/4 C:Trad. K:G |:GABc dedB|dedB dedB|c2ec B2dB|c2A2 A2BA| GABc dedB|dedB dedB|c2ec B2dB|A2F2 G4:|:g2gf gdBd|g2f2 e2d2|c2ec B2dB|c2A2 A2df| g2gf g2Bd|g2f2 e2d2|c2ec B2dB|A2F2 G4:| . More information about abc syntax here . Alert Area . :::success Yes :tada: ::: . :::info This is a message :mega: ::: . :::warning Watch out :zap: ::: . :::danger Oh No! :fire: ::: . Typography . Headers . # h1 Heading ## h2 Heading ### h3 Heading #### h4 Heading ##### h5 Heading ###### h6 Heading . Horizontal Rules . Typographic Replacements . (c) (C) (r) (R) (tm) (TM) (p) (P) +- . test.. test… test…. test….. test?….. test!…. !!!!!! ???? ,, . Remarkable—no, awesome! . During 1980–1988. “Smartypants, double quotes” . ‘Smartypants, single quotes’ . Emphasis . This is bold text . This is bold text . This is italic text . This is italic text . Deleted text . lu~lala~ . Superscript: 19^th^ . Subscript: H~2~O . ++Inserted text++ . ==Marked text== . Blockquotes . Blockquotes can also be nested… . …by using additional greater-than signs right next to each other… . …or with spaces between arrows. Lists . Unordered . | Create a list by starting a line with +, -, or * | Sub-lists are made by indenting 2 spaces: . | Marker character change forces new list start: . | Ac tristique libero volutpat at | Facilisis in pretium nisl aliquet | Nulla volutpat aliquam velit | . | . | Very easy! | . Ordered . | Lorem ipsum dolor sit amet | Consectetur adipiscing elit | Aenean commodo ligula eget dolor . | You can use sequential numbers… | …or keep all the numbers as 1. | Aenean massa | Cum sociis natoque penatibus | Magnis dis parturient montes | Nascetur ridiculus mus | Donec quam felis | . Start numbering with offset: . | foo | bar | . Code . Inline code . Indented code . // Some comments line 1 of code line 2 of code line 3 of code . Block code “fences” . Sample text here... Syntax highlighting . var foo = function (bar) { return bar++; }; console.log(foo(5)); . Tables . | Option | Description | . | data | path to data files to supply the data that will be passed into templates. | . | engine | engine to be used for processing templates. Handlebars is the default. | . | ext | extension to be used for dest files. | . Right aligned columns . | Option | Description | . | data | path to data files to supply the data that will be passed into templates. | . | engine | engine to be used for processing templates. Handlebars is the default. | . | ext | extension to be used for dest files. | . Left aligned columns . | Option | Description | . | data | path to data files to supply the data that will be passed into templates. | . | engine | engine to be used for processing templates. Handlebars is the default. | . | ext | extension to be used for dest files. | . Center aligned columns . | Option | Description | . | data | path to data files to supply the data that will be passed into templates. | . | engine | engine to be used for processing templates. Handlebars is the default. | . | ext | extension to be used for dest files. | . Links . link text link with title Autoconverted link https://github.com/nodeca/pica . Images . With a title: . Like links, images also have a footnote style syntax with a reference later in the document defining the URL location: . Show the image with given size: . Footnotes . Footnote 1 link1. Footnote 2 link[^second]. Inline footnote^[Text of inline footnote] definition. Duplicated footnote reference[^second]. Definition Lists . Term 1 Definition 1 with lazy continuation. Term 2 with inline markup Definition 2 . { some code, part of Definition 2 } . Third paragraph of definition 2. Compact style: . Term 1 ~ Definition 1 . Term 2 ~ Definition 2a ~ Definition 2b . Abbreviations . This is an HTML abbreviation example. It converts “HTML”, but keeps intact partial entries like “xxxHTMLyyy” and so on. ",
+    "url": "https://test.rnbguy.at/features.html#edit",
+    "relUrl": "/features.html#edit"
+  },"17": {
+    "doc": "Features",
+    "title": "Revisions",
+    "content": "When changes are made to a note previous versions of the note are stored as Revisions, if you ever need to return to a previous save you can find all the note revisions by going to Menu -&gt; Revision. The note history on the left displays each revision with a timestamp allowing you to quickly select a revision for the desired date and time. Selecting a revision on the left will display the revised note to the right, the revision will display the changes made with colorization to indicate additions/removals. In addition to browsing the revisions, you can download a selected note revision or revert the current note to the selected revision. | Footnote can have markup and multiple paragraphs. [^second]: Footnote text. &#8617; . | . ",
+    "url": "https://test.rnbguy.at/features.html#revisions",
+    "relUrl": "/features.html#revisions"
+  },"18": {
+    "doc": "Features",
+    "title": "Features",
+    "content": ". tags: features, cool, updated — . ",
+    "url": "https://test.rnbguy.at/features.html",
+    "relUrl": "/features.html"
+  },"19": {
+    "doc": "Hello World",
+    "title": "‘Hello world’ using TLC",
+    "content": "Let’s model a system with two processes Alice and Bob. They are connected by a network that can lose and reorder messages. Alice will send three messages, ‘a’, ‘b’ and ‘c’ to Bob in an undetermined order. If Bob receives ‘a’ and then ‘b’ and then ‘c’ he will become happy. hello_world.tla contains the model and hello_world.cfg contains the configuration file needed to model check it using TLC. Let’s unpack the body of the .tla file. ",
+    "url": "https://test.rnbguy.at/docs/tla/hello_world.html#hello-world-using-tlc",
+    "relUrl": "/docs/tla/hello_world.html#hello-world-using-tlc"
+  },"20": {
+    "doc": "Hello World",
+    "title": "Boilerplate",
+    "content": "You should write TLA in between two lines as below. This is an artifact of the module system. ---- MODULE hello_world ---- \\* content here... ==== . We extend (import) a modules from the standard library . EXTENDS Sequences \\* Import Sequences module from the standard library . it provides the Sequence data structure. It is a list. ",
+    "url": "https://test.rnbguy.at/docs/tla/hello_world.html#boilerplate",
+    "relUrl": "/docs/tla/hello_world.html#boilerplate"
+  },"21": {
+    "doc": "Hello World",
+    "title": "The state machine",
+    "content": "In TLA+ you define a state machine. There is an initial state, which is a choice of values for each variable declared. You also define the transitions allowed in the system. We model 4 pieces of state: Alice’s memory of which messages she has sent, the messages in the network, Bob’s mood and Bob’s inbox. VARIABLES sent_by_alice, network, bobs_mood, bobs_inbox . The Init operator defines the initial values of the state variables of the model. In TLA+ the term operator is used to mean something like a programming language function. Please take the Init operator on faith right now. Init == /\\ sent_by_alice = {} \\* Alice's memory of what she sent is the empty set /\\ network = {} \\* AND so is the network /\\ bobs_mood = \"neutral\" \\* AND Bob's mood is neutral /\\ bobs_inbox = &lt;&lt;&gt;&gt; \\* AND Bob's inbox is an empty Sequence (list) . In TLA you describe which transitions are valid from the universe of all possible transitions using a boolean function. This is probably the most confusing thing to get your around when learning TLA+. A transition is a pair: (CurrentState, NextState). We write a boolean function/operator over the set of all values that (CurrentState, NextState) can take. Given a state CurrentState, the model checker will look for all NextStates’s such that (CurrentState, NextState) evaluates to true. The boolean function is called Next. Next == \\/ AliceSend(\"a\") \\/ AliceSend(\"b\") \\/ AliceSend(\"c\") \\/ NetworkLoss \\/ NetworkDeliver \\/ BobCheckInbox . AliceSend(m) == /\\ m \\notin sent_by_alice /\\ sent_by_alice' = sent_by_alice \\union {m} /\\ network' = network \\union {m} /\\ UNCHANGED &lt;&lt;bobs_mood, bobs_inbox&gt;&gt; NetworkLoss == /\\ \\E e \\in network: network' = network \\ {e} /\\ UNCHANGED &lt;&lt;bobs_mood, bobs_inbox, sent_by_alice&gt;&gt; NetworkDeliver == /\\ \\E e \\in network: /\\ bobs_inbox' = bobs_inbox \\o &lt;&lt;e&gt;&gt; /\\ network' = network \\ {e} /\\ UNCHANGED &lt;&lt;bobs_mood, sent_by_alice&gt;&gt; BobCheckInbox == /\\ bobs_mood' = IF bobs_inbox = &lt;&lt;\"a\", \"b\", \"c\"&gt;&gt; THEN \"happy\" ELSE \"neutral\" /\\ UNCHANGED &lt;&lt;network, bobs_inbox, sent_by_alice&gt;&gt; . We can see that Next is the OR’ing (\\/ = logical OR in TLA.) of a number of operators, which are shown above. Operators can be parameterized, as in the case of AliceSend(m). The Next operator defines a boolean function over all (CurrentState, NextState) pairs. A subset of those pairs will make the function evaluate to true. The model checker will check all of the NextState’s from all of the valid pairs. Pretend we are the model checker and we are currently ‘looking’ at the state C. We will consider all possible states as the NextState, but we will only consider the state N, for example, to be valid, if Next is true when evaluated over the pair (C,N). We share the same variable names between C and N so we add a dash (‘) to the end of variable names when we mean the variable in the NextState. It’s called priming. We can see that the operators that Next is made of contain these primed variables. Inspect AliceSend(m) for example. AliceSend(m) == /\\ m \\notin sent_by_alice /\\ sent_by_alice' = sent_by_alice \\union {m} /\\ network' = network \\union {m} /\\ UNCHANGED &lt;&lt;bobs_mood, bobs_inbox&gt;&gt; . In English the operator says this . “I am true when: my argument m is not in the set sent_by_alice in the CurrentState AND sent_by_alice in the NextState is the same as it is in the CurrentState, but with m included AND network in the NextState is the same as it is in the CurrentState, but with m included AND bobs_mood doesn’t change between the CurrentState and NextState AND bobs_inbox doesn’t change between the CurrentState and NextState “ . We must include the UNCHANGED keyword - there is no ambiguity in TLA+! . Consider NetworkLoss . NetworkLoss == /\\ \\E e \\in network: network' = network \\ {e} /\\ UNCHANGED &lt;&lt;bobs_mood, bobs_inbox, sent_by_alice&gt;&gt; . This operator is more advanced: it contains the ‘\\E’ (there exists) operator. It says . “I am true when: There is an element e in the network of the CurrentState, and that element is not in the network of NextState AND bobs_mood doesn’t change between the CurrentState and NextState AND … “ . Let’s consider how a model checker could select a transition, given a current state where . sent_by_alice = {\"a\"} network = {\"a\"} \\* ignore bobs variables for now . knowing that Next is . Next == \\/ AliceSend(\"a\") \\/ AliceSend(\"b\") \\/ AliceSend(\"c\") \\/ NetworkLoss \\* (ignore other operators for now) . In a pair (CurrentState, NextState) where AliceSend(“b”) was true NextState must look like . sent_by_alice = {\"a\", \"b\"} network = {\"a\", \"b\"} \\* ignore bobs variables for now . and in one where NetworkLoss was true NextState would look like . sent_by_alice = {\"a\", \"b\"} network = {} \\* ignore bobs variables for now . Next evaluates to true over both of these pairs, and the model checker will check both possibilities for us. Understanding Next as a boolean function over pairs of states is key to understanding TLA+. The Init operator is a special case, it’s a boolean function over one state only. (It’s not a special case if you consider it to be a boolean function over a pair (SentinelState, InitialState) for a hidden SentinelState). A common misinterpretation is to view TLA+ code as describing an imperative execution, where one statement precedes the next. In actuality you define boolean functions and other simple pure functions, there is no concept of execution or execution order. We have looked at AliceSend and NetworkLoss. Let’s look at NetworkDeliver and BobCheckInbox. NetworkDeliver == /\\ \\E e \\in network: /\\ bobs_inbox' = bobs_inbox \\o &lt;&lt;e&gt;&gt; /\\ network' = network \\ {e} /\\ UNCHANGED &lt;&lt;bobs_mood, sent_by_alice&gt;&gt; . NetworkDeliver matches transitions where an element e is removed from the network set and added (with the \\o operator) to bobs_inbox list. BobCheckInbox == /\\ bobs_mood' = IF bobs_inbox = &lt;&lt;\"a\", \"b\", \"c\"&gt;&gt; THEN \"happy\" ELSE \"neutral\" /\\ UNCHANGED &lt;&lt;network, bobs_inbox, sent_by_alice&gt;&gt; . As a challenge try to write BobCheckInbox (above) using only the logical operators /\\ and \\/. Answer: . BobCheckInbox == /\\ \\/ /\\ bobs_mood' = \"happy\" /\\ bobs_inbox = &lt;&lt;\"a\", \"b\", \"c\"&gt;&gt; \\/ /\\ bobs_mood' = \"neutral\" /\\ bobs_inbox # &lt;&lt;\"a\", \"b\", \"c\"&gt;&gt; /\\ UNCHANGED &lt;&lt;network, bobs_inbox, sent_by_alice&gt;&gt; . ",
+    "url": "https://test.rnbguy.at/docs/tla/hello_world.html#the-state-machine",
+    "relUrl": "/docs/tla/hello_world.html#the-state-machine"
+  },"22": {
+    "doc": "Hello World",
+    "title": "Checking Invariants",
+    "content": "We modeled the state machine so now we can check what properties it has. We can use a model checker to get sample execution traces beginning from the initial state and leading up to some state satisfying some boolean function. Precisely: we can find an sequence of states (T) starting in the initial state and ending in a state S that makes a boolean function P evaluate to true. In common terminology the sequence of states T is called a counterexample, and the boolean function is the negation of an Invariant. This means if we want to find an execution T whose final state satisfies P we write an invariant: Inv == ~P and we check that. (We check that Inv always holds: if it doesn’t then there exists a state where ~Inv = ~~P = P holds). If we want to make sure that no execution exists whose final state satisfies P we write an invariant: Inv == P and we hope that the model checker exhausts its search without finding a trace. Suppose we want to ensure that every (\\A means ‘for all’ in TLA+) message in the network was at some point sent by Alice. NothingUnexpectedInNetwork == \\A e \\in network: e \\in sent_by_alice . NothingUnexpectedInNetwork is a boolean function over a single state. Using the model checker we can check it as an invariant. We use the following configuration for TLC . INIT Init NEXT Next INVARIANTS NothingUnexpectedInNetwork . We can check this using the VSCode plugin for TLA (through the context menu), or with . java -cp tla2tools.jar tlc2.TLC -config hello_world.cfg -workers auto -cleanup hello_world.tla # TLC output: # ... # Model checking completed. No error has been found. TLC should report no error found: this means that NothingUnexpectedInNetwork was also true in every execution. We may be interested to find an execution where Bob becomes happy. We write the invariant . NotBobIsHappy == LET BobIsHappy == bobs_mood = \"happy\" IN ~BobIsHappy . which makes use of the LET keyword, used to define values or operators inline. We use the .cfg file . INIT Init NEXT Next INVARIANTS NotBobIsHappy . Using the above we ask TLC to check if ‘always BobIsNotHappy’. If Bob ever becomes happy then it will be false, so TLC will give us a counterexample, or trace, in which Bob becomes happy. TLC should spit out a trace . Error: Invariant NotBobIsHappy is violated. Error: The behavior up to this point is: State 1: &lt;Initial predicate&gt; /\\ network = {} /\\ sent_by_alice = {} /\\ bobs_inbox = &lt;&lt;&gt;&gt; /\\ bobs_mood = \"neutral\" State 2: &lt;..&gt; /\\ network = {\"a\"} /\\ sent_by_alice = {\"a\"} /\\ bobs_inbox = &lt;&lt;&gt;&gt; /\\ bobs_mood = \"neutral\" State 3: &lt;..&gt; /\\ network = {\"a\", \"b\"} /\\ sent_by_alice = {\"a\", \"b\"} /\\ bobs_inbox = &lt;&lt;&gt;&gt; /\\ bobs_mood = \"neutral\" State 4: &lt;..&gt; /\\ network = {\"a\", \"b\", \"c\"} /\\ sent_by_alice = {\"a\", \"b\", \"c\"} /\\ bobs_inbox = &lt;&lt;&gt;&gt; /\\ bobs_mood = \"neutral\" State 5: &lt;..&gt; /\\ network = {\"b\", \"c\"} /\\ sent_by_alice = {\"a\", \"b\", \"c\"} /\\ bobs_inbox = &lt;&lt;\"a\"&gt;&gt; /\\ bobs_mood = \"neutral\" State 6: &lt;..&gt; /\\ network = {\"c\"} /\\ sent_by_alice = {\"a\", \"b\", \"c\"} /\\ bobs_inbox = &lt;&lt;\"a\", \"b\"&gt;&gt; /\\ bobs_mood = \"neutral\" State 7: &lt;..&gt; /\\ network = {} /\\ sent_by_alice = {\"a\", \"b\", \"c\"} /\\ bobs_inbox = &lt;&lt;\"a\", \"b\", \"c\"&gt;&gt; /\\ bobs_mood = \"neutral\" State 8: &lt;..&gt; /\\ network = {} /\\ sent_by_alice = {\"a\", \"b\", \"c\"} /\\ bobs_inbox = &lt;&lt;\"a\", \"b\", \"c\"&gt;&gt; /\\ bobs_mood = \"happy\" . Notice that bob is happy in state 8. That’s it, congratulations :) Try the next tutorial. ",
+    "url": "https://test.rnbguy.at/docs/tla/hello_world.html#checking-invariants",
+    "relUrl": "/docs/tla/hello_world.html#checking-invariants"
+  },"23": {
+    "doc": "Hello World",
+    "title": "Hello World",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/hello_world.html",
+    "relUrl": "/docs/tla/hello_world.html"
+  },"24": {
+    "doc": "Tla+",
+    "title": "TLA+",
+    "content": "These is our basic set of tutorials for TLA+. Please use the cheatsheet too! . | Tutorials | Cheatsheet | . | TLA+ Homepage | Leslie Lamport’s Specifying Systems | Cheatsheet | . ",
+    "url": "https://test.rnbguy.at/docs/tla/#tla",
+    "relUrl": "/docs/tla/#tla"
+  },"25": {
+    "doc": "Tla+",
+    "title": "Tla+",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/",
+    "relUrl": "/docs/tla/"
+  },"26": {
+    "doc": "Model Based Testing",
+    "title": "Model Based Testing",
+    "content": "Descriptions about Model Based Testing. To learn more about tla+. | TLA+ | Model extraction | Modelator | . fn main() { println!(\"hello world!\"); } . fn main() { println!(\"hello world!\"); } . Hello world to everyone! . ",
+    "url": "https://test.rnbguy.at/",
+    "relUrl": "/"
+  },"27": {
+    "doc": "Model extraction",
+    "title": "Model extraction",
+    "content": ". | Leslie Lamport’s Specifying Systems | Case Studies | . ",
+    "url": "https://test.rnbguy.at/docs/model.html",
+    "relUrl": "/docs/model.html"
+  },"28": {
+    "doc": "Modelator",
+    "title": "Modelator",
+    "content": "Modelator Github repo . ",
+    "url": "https://test.rnbguy.at/docs/modelator.html",
+    "relUrl": "/docs/modelator.html"
+  },"29": {
+    "doc": "Cheatsheet",
+    "title": "TLA+ Cheatsheet",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/tla+cheatsheet.html#tla-cheatsheet",
+    "relUrl": "/docs/tla/tla+cheatsheet.html#tla-cheatsheet"
+  },"30": {
+    "doc": "Cheatsheet",
+    "title": "TLA+ Quick Start - contains enough to model almost anything",
+    "content": "(* Comments *) (* This is multiline comment *) \\* This is single line comment (* Module structure *) ---- MODULE example ---- \\* Starts TLA+ module (should be in file example.tla) ==== \\* Ends TLA+ module (everything after that is ignored) VARIABLES x, y, ... \\* declares variables x, y, ... CONSTANTS x, y, ... \\* declares constants x, y, ... (should be defined in configuration) Name == e \\* defines operator Name without parameters, and with expression e as a body Name(x, y, ...) == e \\* defines operator Name with parameters x, y, ..., and body e (may refer to x, y, ...) (* Boolean logic *) TRUE \\* Boolean true FALSE \\* Boolean false ~x \\* not x; negation x /\\ y \\* x and y; conjunction (can be also put at line start, in multi-line conjunctions) x \\/ y \\* x or y; disjunction (can be also put at line start, in multi-line disjunctions) x = y \\* x equals y x /= y \\* x not equals y x =&gt; y \\* implication: y is true whenever x is true x &lt;=&gt; y \\* equivalence: x is true if and only if y is true (* Integers *) \\* EXTENDS Integers (should extend standard module Integers) 1, -2, 1234567890 \\* integer literals; integers are unbounded a..b \\* integer range: all integers between a and b inclusive -x \\* integer negation: negate the integer literal or variable x x + y, x - y, x * y \\* integer addition, subtraction, multiplication x &lt; y, x &lt;= y \\* less than, less than or equal x &gt; y, x &gt;= y \\* greater than, greater than or equal (* Finite sets *) \\* EXTENDS FiniteSets (should extend standard module FiniteSets) {a, b, c} \\* set constructor: the set containing a, b, c Cardinality(S) \\* number of elements in set S x \\in S \\* x belongs to set S x \\notin S \\* x does not belong to set S S \\subseteq T \\* is set S a subset of set T? true of all elements of S belong to T S \\union T \\* union of sets S and T: all x belonging to S or T S \\intersect T \\* intersection of sets S and T: all x belonging to S and T S \\ T \\* set difference, S less T: all x belonging to S but not T {x \\in S: P(x)} \\* set filter: selects all elements x in S such that P(x) is true {e: x \\in S} \\* set map: maps all elements x in set S to expression e (which may contain x) (* Quantifiers *) \\A x \\in S: \\* for all elements x in set S it holds that .. \\E x \\in S: \\* there exists an element x in set S such that .. (* Functions *) [x \\in S |-&gt; e] \\* function constructor: maps all keys x from domain S to expression e (may refer to x) f[x] \\* function application: the value of function f at key x DOMAIN f \\* function domain: the set of keys of function f [f EXCEPT ![x] = e] \\* function f with key x remapped to expression e (may reference @, the original f[x]) [f EXCEPT ![x] = e1, \\* function f with multiple keys remapped: ![y] = e2, ...] \\* x to e1 (@ in e1 will be equal to f[x]), y to e2 (@ in e2 will be equal to f[y]) (* Records *) [x |-&gt; e1, y |-&gt; e2, ...] \\* record constructor: a record equal at field x to e1, and at y to e2 r.x \\* record field access: the value of field x of record r [r EXCEPT !.x = e] \\* record r with field x remapped to expression e (may reference @, the original r.x) [r EXCEPT !.x = e1, \\* record r with multiple fields remapped: !.y = e2, ...] \\* x to e1 (@ in e1 is equal to r.x), y to e2 (@ in e2 is equal to r.y) (* Sequences *) \\* EXTEND Sequences (should extend standard module Sequences) &lt;&lt;a,b,c&gt;&gt; \\* sequence constructor: a sequence containing elements a, b, c s[i] \\* the ith element of the sequence t (1-indexed!) s \\o t \\* the sequences s and t concatenated Len(s) \\* the length of sequence s Append(s, x) \\* the sequence s with x added to the end Head(s) \\* the first element of sequence s (* Control structures *) IF P THEN x ELSE y \\* if P is true, then x should be true; otherwise y should be true . ",
+    "url": "https://test.rnbguy.at/docs/tla/tla+cheatsheet.html#tla-quick-start---contains-enough-to-model-almost-anything",
+    "relUrl": "/docs/tla/tla+cheatsheet.html#tla-quick-start---contains-enough-to-model-almost-anything"
+  },"31": {
+    "doc": "Cheatsheet",
+    "title": "Apalache",
+    "content": "\\* A handy alias for calling Apalache alias apalache=\"java -jar apalache-pkg-0.17.5-full.jar --nworkers=8\" \\* Typecheck apalache typecheck &lt;.tla file&gt; \\* Model check assuming a .cfg file with the same name as the .tla file is present apalache check &lt;.tla file&gt; \\* Model check assuming with a specific .cfg file apalache check --config=&lt;.cfg file&gt; &lt;.tla file&gt; \\* TODO: apalache check --view=&lt;View Operator Name&gt; &lt;.tla file&gt; . ",
+    "url": "https://test.rnbguy.at/docs/tla/tla+cheatsheet.html#apalache",
+    "relUrl": "/docs/tla/tla+cheatsheet.html#apalache"
+  },"32": {
+    "doc": "Cheatsheet",
+    "title": "TLC",
+    "content": "\\* A handy alias providing the JVM with 12GB of RAM (adjust accordingly) and using multiple threads alias tlc=\"java -XX:+UseParallelGC -Xmx12g -cp tla2tools.jar tlc2.TLC -workers auto\" \\* Model check with TLC tlc -config &lt;.config file&gt; &lt;.tla file&gt; \\* Run TLC in simulation mode tlc -config &lt;.config file&gt; -simulate &lt;.tla file&gt; . ",
+    "url": "https://test.rnbguy.at/docs/tla/tla+cheatsheet.html#tlc",
+    "relUrl": "/docs/tla/tla+cheatsheet.html#tlc"
+  },"33": {
+    "doc": "Cheatsheet",
+    "title": "Cheatsheet",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/tla+cheatsheet.html",
+    "relUrl": "/docs/tla/tla+cheatsheet.html"
+  },"34": {
+    "doc": "Tutorial",
+    "title": "TLA+ Basics Tutorial",
+    "content": "This is a straightforward introduction to TLA+. By the end you should be able to write your own models of distributed systems and concurrent algorithms. You should also be able to check properties of the models, and generate execution traces which can be used in automatic testing pipelines. The target audience is software engineers who are fluent in a mainstream programming language and understand computer science. This document contains prose. The cheatsheet is useful as a reference. ",
+    "url": "https://test.rnbguy.at/docs/tla/tutorial.html#tla-basics-tutorial",
+    "relUrl": "/docs/tla/tutorial.html#tla-basics-tutorial"
+  },"35": {
+    "doc": "Tutorial",
+    "title": "TLA+ capabilities",
+    "content": "TLA+ is a language for writing models of distributed systems and concurrent algorithms. It doesn’t execute on your machine like a typical programming language: you run it through a model checker. A model checker is a program that explores all possible executions of a system. You can specify properties and behaviors, and the model checker will tell you if they hold or not. The model checker can also give you examples of behaviors. TLA+ has been used to model a wide variety of things including locks and allocators in the linux kernel, the Docker SwarmKit container orchestrator, Paxos consensus, the Raft replicated state machine and more. All TLA+ models are structured as a state machine. You specify an initial state and a collection of transitions. Additionally you can specify boolean functions (invariants) over the state. The model checker will check for boolean function violations. To give examples: you could model a concurrent garbage collector algorithm and check that no memory leak is possible. You could also model the API for a financial transfers system, and check that it is not possible to steal funds. ",
+    "url": "https://test.rnbguy.at/docs/tla/tutorial.html#tla-capabilities",
+    "relUrl": "/docs/tla/tutorial.html#tla-capabilities"
+  },"36": {
+    "doc": "Tutorial",
+    "title": "Getting set up",
+    "content": "For these tutorials we require the TLC and Apalache model checkers. TLC can be downloaded with . tlaurl=https://github.com/tlaplus/tlaplus/releases/download/v1.7.1/tla2tools.jar; curl -LO $tlaurl; . Apalache can be downloaded with . apalacheurl=https://github.com/informalsystems/apalache/releases/download/v0.17.5/apalache-v0.17.5.zip; curl -LO $apalacheurl; . You will need to unzip Apalache and move mod-distribution/target/apalache-pkg-0.17.5-full.jar to your working directory. We recommend using the Visual Studio Code TLA+ extension to work on your models. It provides syntax highlighting, parsing and model checking through TLC. There are more resources that we won’t in this set of tutorials but that might be useful to know about. Please see The TLA+ ecosystem. ",
+    "url": "https://test.rnbguy.at/docs/tla/tutorial.html#getting-set-up",
+    "relUrl": "/docs/tla/tutorial.html#getting-set-up"
+  },"37": {
+    "doc": "Tutorial",
+    "title": "Let’s get started",
+    "content": "We have 5 mini tutorials giving you increasing power. | ‘Hello world’ using TLC | Typechecking your models | Apalache vs TLC | Finding an Ethereum exploit using Apalache | Generating traces for automated testing using Apalache | . That’s it for the basic tutorials; congratulations! . These tutorials make up the basics of using TLA+, please see advanced tutorials! . ",
+    "url": "https://test.rnbguy.at/docs/tla/tutorial.html#lets-get-started",
+    "relUrl": "/docs/tla/tutorial.html#lets-get-started"
+  },"38": {
+    "doc": "Tutorial",
+    "title": "Footnote: what the tutorials do not include",
+    "content": "TLA+ and its tools includes many features. We ignored the following in these basic tutorials . | Formal proof using TLAPS | Inductive invariants using Apalache | Verifying temporal (liveness) properties [1, 2] | TLC’s symmetry sets and model values | Apalache’s uninterpreted types | . These features are useful in some circumstances. We may add sections in the future. ",
+    "url": "https://test.rnbguy.at/docs/tla/tutorial.html#footnote-what-the-tutorials-do-not-include",
+    "relUrl": "/docs/tla/tutorial.html#footnote-what-the-tutorials-do-not-include"
+  },"39": {
+    "doc": "Tutorial",
+    "title": "Tutorial",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/tutorial.html",
+    "relUrl": "/docs/tla/tutorial.html"
+  },"40": {
+    "doc": "TypeChecking",
+    "title": "Typechecking",
+    "content": "As a model grows it becomes difficult to ensure that the TLA+ code in the models is doing what you think it is. There are techniques to help ensure there are no bugs in your model. The best way to make sure your model is high quality is to use types and the Apalache type checker. Apalache comes with a type checker. The docs contain all the details. In this tutorial we will type the model of Alice and Bob’s interactions in hello_world.tla. ",
+    "url": "https://test.rnbguy.at/docs/tla/typechecking.html#typechecking",
+    "relUrl": "/docs/tla/typechecking.html#typechecking"
+  },"41": {
+    "doc": "TypeChecking",
+    "title": "Typechecking",
+    "content": "Our model of Alice and Bob’s interaction is simple: the state variables are simple data structures. We should type the variables with a particular data structure. VARIABLES \\* @type: Set(Str); sent_by_alice, \\* @type: Set(Str); network, \\* @type: Str; bobs_mood, \\* @type: Seq(Str); bobs_inbox . The Apalache type system works by annotating lines of code with special TLA+ comments . \\* @type: ... We have specified that . | sent_by_alice is a set of strings | network is a set of strings | bobs_moods is a string | bobs_inbox is a sequence of strings | . We should also specify the type of operators. For example we can annotate AliceSend(m) . \\* @type: (Str) =&gt; Bool; AliceSend(m) == /\\ m \\notin sent_by_alice /\\ sent_by_alice' = sent_by_alice \\union {m} /\\ network' = network \\union {m} /\\ UNCHANGED &lt;&lt;bobs_mood, bobs_inbox&gt; . The annotation says that AliceSend is an operator taking strings and returning booleans. Finally we can typecheck the model . java -jar apalache-pkg-0.17.5-full.jar typecheck hello_world_typed.tla # Apalache output: # ... # Type checker [OK] . ",
+    "url": "https://test.rnbguy.at/docs/tla/typechecking.html#typechecking-1",
+    "relUrl": "/docs/tla/typechecking.html#typechecking-1"
+  },"42": {
+    "doc": "TypeChecking",
+    "title": "TypeChecking",
+    "content": " ",
+    "url": "https://test.rnbguy.at/docs/tla/typechecking.html",
+    "relUrl": "/docs/tla/typechecking.html"
+  }
+}
